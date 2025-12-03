@@ -1,0 +1,31 @@
+package com.ambulance.serveur.config;
+
+import com.ambulance.serveur.websocket.WebSocketHandler;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+    private final WebSocketHandler webSocketHandler;
+
+    @Value("${websocket.endpoint}")
+    private String endpoint;
+
+    @Value("${websocket.allowed-origins}")
+    private String allowedOrigins;
+
+    public WebSocketConfig(WebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
+    }
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(webSocketHandler, endpoint)
+                .setAllowedOrigins(allowedOrigins); // Permet connexions Android
+    }
+}
